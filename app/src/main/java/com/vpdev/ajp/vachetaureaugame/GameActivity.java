@@ -1,5 +1,6 @@
 package com.vpdev.ajp.vachetaureaugame;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -46,25 +47,22 @@ public class GameActivity  extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference().child("games");
         firebaseAuth = FirebaseAuth.getInstance();
         edit_vt = (EditText) findViewById(R.id.editText_vt);
+
     if (MenuActivity.player_state.equals("host"))
     {
-        if (gamefound!=0)
-        {
+        button_number.setVisibility(View.INVISIBLE);
+        button_number.setClickable(false);
+         edit_number.setFocusable(false);
+            edit_number.setEnabled(false);
+            edit_number.setCursorVisible(false);
+            edit_number.setKeyListener(null);
+            edit_number.setBackgroundColor(Color.TRANSPARENT);
+            edit_number.setTextColor(Color.BLACK);
+            edit_number.setText("VOila");
 
 
 
-
-
-
-
-
-
-
-
-
-        }
-
-
+                              
 
 
 
@@ -72,6 +70,18 @@ public class GameActivity  extends AppCompatActivity {
 
     else if (MenuActivity.player_state.equals("client"))
     {
+
+        button_vt.setVisibility(View.INVISIBLE);
+        button_vt.setClickable(false);
+        edit_vt.setFocusable(false);
+
+            edit_vt.setEnabled(false);
+            edit_vt.setCursorVisible(false);
+            edit_vt.setKeyListener(null);
+            edit_vt.setBackgroundColor(Color.TRANSPARENT);
+            edit_vt.setTextColor(Color.BLACK);
+
+
 
 
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -120,7 +130,13 @@ public class GameActivity  extends AppCompatActivity {
     }
 
 
+  private void client_turn()
+  {
 
+
+
+
+  }
 
 
 
