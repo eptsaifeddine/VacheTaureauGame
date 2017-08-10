@@ -2,6 +2,7 @@ package com.vpdev.ajp.vachetaureaugame;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -139,7 +140,7 @@ public class GameActivity  extends AppCompatActivity {
 
               String Turn = dataSnapshot.getValue(String.class);
               if (Turn.equals("client")) {
-
+                  
 
                   button_number.setText("submit number");
                   button_number.setClickable(true);
@@ -169,36 +170,68 @@ public class GameActivity  extends AppCompatActivity {
       });
   }
 
-     private void host_turn ()
-    {
+     private void host_turn () {
 
-       final DatabaseReference turn = databaseReference.child(gameId).child("Turn");
-       turn.addValueEventListener(new ValueEventListener() {
-           @Override
-           public void onDataChange(DataSnapshot dataSnapshot) {
-               String Turn=dataSnapshot.getValue(String.class) ;
-               if (Turn.equals("host")) {
+         final DatabaseReference turn = databaseReference.child(gameId).child("Turn");
+         turn.addValueEventListener(new ValueEventListener() {
+             @Override
+             public void onDataChange(final DataSnapshot dataSnapshot) {
+                 String Turn = dataSnapshot.getValue(String.class);
+                 if (Turn.equals("host")) {
 
+                       DatabaseReference numberdatabase =databaseReference.child(gameId).child("NUMBER");
+                       numberdatabase.addValueEventListener(new ValueEventListener() {
+                           @Override
+                           public void onDataChange(DataSnapshot dataSnapshot) {
+                                 String numberString ;
+                                     numberString=dataSnapshot.getValue(String.class) ;
+                                     edit_number.setText(numberString);
+                           }
 
+                           @Override
+                           public void onCancelled(DatabaseError databaseError) {
 
-
-
-               }
-
-
-
-           }
-
-           @Override
-           public void onCancelled(DatabaseError databaseError) {
-
-           }
-       })
+                           }
+                       });
 
 
 
 
 
+                     button_vt.setText("submit vt");
+                     button_vt.setClickable(true);
+                     button_vt.setOnClickListener(new View.OnClickListener() {
+                         @Override
+                         public void onClick(View view) {
+                             String vt = edit_vt.getText().toString().trim();
+                             databaseReference.child(gameId).child("VT").setValue(vt);
+
+                             turn.setValue("client");
+
+
+                         }
+                     });
+
+
+                 } else {
+
+
+
+                     button_vt.setText("WAITING ....");
+                     button_vt.setClickable(false);
+
+
+                 }
+
+
+             }
+
+             @Override
+             public void onCancelled(DatabaseError databaseError) {
+
+             }
+         });
+     }
 
 
 
@@ -213,7 +246,12 @@ public class GameActivity  extends AppCompatActivity {
 
 
 
-    }
+
+
+
+
+
+    
 
 
 
@@ -221,8 +259,8 @@ public class GameActivity  extends AppCompatActivity {
 
 
 
-  }
 
+ 
 
 
 
