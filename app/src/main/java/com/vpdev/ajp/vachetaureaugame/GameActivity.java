@@ -126,12 +126,97 @@ public class GameActivity  extends AppCompatActivity {
     }
     else
         Toast.makeText(GameActivity.this,"Error",Toast.LENGTH_SHORT).show();
+    client_turn();
 
     }
 
 
-  private void client_turn()
-  {
+  private void client_turn() {
+      final DatabaseReference turn = databaseReference.child(gameId).child("Turn");
+      turn.addValueEventListener(new ValueEventListener() {
+          @Override
+          public void onDataChange(DataSnapshot dataSnapshot) {
+
+              String Turn = dataSnapshot.getValue(String.class);
+              if (Turn.equals("client")) {
+
+
+                  button_number.setText("submit number");
+                  button_number.setClickable(true);
+                  button_number.setOnClickListener(new View.OnClickListener() {
+                      @Override
+                      public void onClick(View view) {
+                          String number = edit_number.getText().toString().trim();
+                          databaseReference.child(gameId).child("NUMBER").setValue(number);
+
+                          turn.setValue("host");
+
+
+                      }
+                  });
+              } else {
+                  button_number.setText("waiting ...");
+                  button_number.setClickable(false);
+
+              }
+
+          }
+
+          @Override
+          public void onCancelled(DatabaseError databaseError) {
+
+          }
+      });
+  }
+
+     private void host_turn ()
+    {
+
+       final DatabaseReference turn = databaseReference.child(gameId).child("Turn");
+       turn.addValueEventListener(new ValueEventListener() {
+           @Override
+           public void onDataChange(DataSnapshot dataSnapshot) {
+               String Turn=dataSnapshot.getValue(String.class) ;
+               if (Turn.equals("host")) {
+
+
+
+
+
+               }
+
+
+
+           }
+
+           @Override
+           public void onCancelled(DatabaseError databaseError) {
+
+           }
+       })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+
+
 
 
 
