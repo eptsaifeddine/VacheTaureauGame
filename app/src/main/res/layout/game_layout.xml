@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="356dp"
+    android:layout_height="495dp"
+    tools:context="com.vpdev.ajp.vachetaureaugame.LoginActivity"
+    tools:layout_editor_absoluteY="8dp"
+    tools:layout_editor_absoluteX="8dp">
+    <RelativeLayout
+        android:orientation="vertical"
+        android:id="@+id/lineair_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteY="27dp"
+        tools:layout_editor_absoluteX="0dp">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText_vt"
+
+
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/button_submit_number"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:text="Submit Number"
+
+        tools:layout_editor_absoluteX="103dp"
+        tools:layout_editor_absoluteY="415dp" />
+
+    <EditText
+        android:id="@+id/editText_number"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+
+
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="351dp" />
+
+    <Button
+        android:id="@+id/button_submit_vt"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center"
+        android:text="Submit VT"
+        tools:layout_editor_absoluteX="103dp"
+        tools:layout_editor_absoluteY="87dp" />
+
+</android.support.constraint.ConstraintLayout>

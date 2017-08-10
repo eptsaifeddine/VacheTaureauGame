@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.vpdev.ajp.vachetaureaugame.LoginActivity">
+    <RelativeLayout
+        android:orientation="vertical"
+        android:id="@+id/lineair_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:gravity="center_vertical">
+      <Button
+          android:layout_width="150dp"
+          android:layout_height="50dp"
+          android:text="Find a game "
+          android:layout_marginTop="200dp"
+          android:layout_gravity="center_vertical|center_horizontal"
+          android:layout_centerInParent="true"
+          android:layout_centerVertical="true"
+          android:layout_centerHorizontal="true"
+          android:id="@+id/button_findgame"
+
+
+
+          />
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:text="create_game "
+
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:id="@+id/button_creategame"
+
+
+            android:layout_marginTop="37dp"
+            android:layout_below="@+id/button_findgame"
+            android:layout_alignLeft="@+id/button_findgame"
+            android:layout_alignStart="@+id/button_findgame" />
+
+
+
+    </RelativeLayout>
+
+
+</android.support.constraint.ConstraintLayout>
