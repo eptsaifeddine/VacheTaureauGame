@@ -1,0 +1,79 @@
+{
+  "project_info": {
+    "project_number": "866187201869",
+    "firebase_url": "https://ajpappalpha.firebaseio.com",
+    "project_id": "ajpappalpha",
+    "storage_bucket": "ajpappalpha.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:866187201869:android:0577161986f489e6",
+        "android_client_info": {
+          "package_name": "com.vpdev.ajp.ajp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "866187201869-708vo4an6oecpqbn55sc3f9hfsi75g9u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3Q2JLT-rPomd7Q8OBnnoCS2VyuUzbJW8"
+        },
+        {
+          "current_key": "AIzaSyCt1yLQXB4388t2ptwZuaMFL7RG7-lKHlo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:866187201869:android:4db99bf0ec3061d4",
+        "android_client_info": {
+          "package_name": "com.vpdev.ajp.vachetaureaugame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "866187201869-708vo4an6oecpqbn55sc3f9hfsi75g9u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3Q2JLT-rPomd7Q8OBnnoCS2VyuUzbJW8"
+        },
+        {
+          "current_key": "AIzaSyCt1yLQXB4388t2ptwZuaMFL7RG7-lKHlo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
