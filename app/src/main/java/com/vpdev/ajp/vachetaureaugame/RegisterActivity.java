@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.Toast;
 
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -32,6 +33,9 @@ public class RegisterActivity extends AppCompatActivity{
     private EditText editText_register_password;
     private EditText editText_register_name;
     private FirebaseAuth mAuth ;
+    private ProgressDialog progressDialog ;
+    private DatabaseReference databaseReference ;
+
     @Override
     //
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +45,54 @@ public class RegisterActivity extends AppCompatActivity{
         editText_register_email=(EditText)findViewById(R.id.editText_register_email);
         editText_register_name=(EditText)findViewById(R.id.editText_register_name);
         editText_register_password=(EditText)findViewById(R.id.editText_register_password);
+        progressDialog=new ProgressDialog(RegisterActivity.this) ;
+        progressDialog.setMessage("Registering ....");
+        databaseReference =FirebaseDatabase.getInstance().getReference().child("users") ;
+        mAuth=FirebaseAuth.getInstance() ;
+        button_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                save_user() ;
+
+
+            }
+        });
+
+
     }
 
+    private void save_user() {
+        progressDialog.show();
+        final String email =editText_register_email.getText().toString().trim() ;
+        final String password=editText_register_password.getText().toString().trim() ;
+        final String name=editText_register_name.getText().toString().trim() ;
+        mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful())
+                {
+                        databaseReference.child(mAuth.getCurrentUser().getUid()).child("name").setValue(name) ;
+                        databaseReference.child(mAuth.getCurrentUser().getUid()).child("email").setValue(email) ;
+                        databaseReference.child(mAuth.getCurrentUser().getUid()).child("score").setValue("0") ;
 
 
+                   progressDialog.dismiss();
+                }
+                else
+                {
+                    Toast.makeText(RegisterActivity.this,"Operation failed",Toast.LENGTH_SHORT) ;
+
+
+                }
+
+
+            }
+        });
+
+
+
+
+    }
 
 
 }
