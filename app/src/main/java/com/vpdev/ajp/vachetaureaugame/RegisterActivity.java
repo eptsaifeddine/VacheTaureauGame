@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task; //
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -47,6 +48,7 @@ public class RegisterActivity extends AppCompatActivity{
         editText_register_password=(EditText)findViewById(R.id.editText_register_password);
         progressDialog=new ProgressDialog(RegisterActivity.this) ;
         progressDialog.setMessage("Registering ....");
+        FirebaseApp.initializeApp(RegisterActivity.this);
         databaseReference =FirebaseDatabase.getInstance().getReference().child("users") ;
         mAuth=FirebaseAuth.getInstance() ;
         button_save.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +76,7 @@ public class RegisterActivity extends AppCompatActivity{
                         databaseReference.child(mAuth.getCurrentUser().getUid()).child("name").setValue(name) ;
                         databaseReference.child(mAuth.getCurrentUser().getUid()).child("email").setValue(email) ;
                         databaseReference.child(mAuth.getCurrentUser().getUid()).child("score").setValue("0") ;
+
 
 
                    progressDialog.dismiss();

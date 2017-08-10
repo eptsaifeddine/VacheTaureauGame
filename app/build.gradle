@@ -37,3 +37,4 @@ dependencies {
     compile 'com.google.code.findbugs:jsr305:2.0.1'
     compile 'com.firebaseui:firebase-ui:0.4.3' ;
 }
+apply plugin: 'com.google.gms.google-services'
