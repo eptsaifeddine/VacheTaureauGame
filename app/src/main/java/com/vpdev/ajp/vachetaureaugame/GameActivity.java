@@ -47,7 +47,7 @@ public class GameActivity  extends AppCompatActivity {
                 databaseReference.child("game"+Integer.toString(i)).child("client id").setValue("0");
                 databaseReference.child("game"+Integer.toString(i)).child("VT").setValue("NOTSTARTEDYET");
                 databaseReference.child("game"+Integer.toString(i)).child("NUMBER").setValue("NOTSTARTEDYET");
-
+//
 
 
 
