@@ -24,6 +24,7 @@ public class GameActivity  extends AppCompatActivity {
         button_number = (Button)findViewById(R.id.button_submit_number);
         edit_number = (EditText)findViewById(R.id.editText_number);
         edit_vt = (EditText)findViewById(R.id.editText_vt);
+        //
 
 
 
