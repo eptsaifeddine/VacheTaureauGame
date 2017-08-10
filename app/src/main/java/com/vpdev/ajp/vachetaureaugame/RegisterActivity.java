@@ -27,15 +27,19 @@ import com.google.firebase.database.FirebaseDatabase;
  */
 
 public class RegisterActivity extends AppCompatActivity{
-    private Button button_save=(Button) findViewById(R.id.button_save) ;
-    private EditText editText_register_email=(EditText)findViewById(R.id.editText_register_email);
-    private EditText editText_register_name=(EditText)findViewById(R.id.editText_register_name);
-    private EditText editText_register_password=(EditText)findViewById(R.id.editText_register_password);
+    private Button button_save;
+    private EditText editText_register_email;
+    private EditText editText_register_password;
+    private EditText editText_register_name;
     private FirebaseAuth mAuth ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        button_save=(Button) findViewById(R.id.button_save) ;
+        editText_register_email=(EditText)findViewById(R.id.editText_register_email);
+        editText_register_name=(EditText)findViewById(R.id.editText_register_name);
+        editText_register_password=(EditText)findViewById(R.id.editText_register_password);
     }
 
 

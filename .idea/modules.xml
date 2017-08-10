@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/VacheTaureauGame.iml" filepath="$PROJECT_DIR$/VacheTaureauGame.iml" />
+      <module fileurl="file://C:\Users\masmo\StudioProjects\VacheTaureauGame\VacheTaureauGame.iml" filepath="C:\Users\masmo\StudioProjects\VacheTaureauGame\VacheTaureauGame.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\masmo\StudioProjects\VacheTaureauGame\app\app.iml" filepath="C:\Users\masmo\StudioProjects\VacheTaureauGame\app\app.iml" />
     </modules>
   </component>
 </project>
