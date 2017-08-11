@@ -36,6 +36,7 @@ public class GameActivity  extends AppCompatActivity {
     private FirebaseAuth firebaseAuth ;
         public static int gamefound ;
         public static String gameId ;
+        public String gameid ;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
@@ -78,26 +79,7 @@ public class GameActivity  extends AppCompatActivity {
 
     else if (MenuActivity.player_state.equals("client"))
     {
-        gameId=find_game() ;
-        if (gameId!=null) {
-            Toast.makeText(GameActivity.this,"gameid != null",Toast.LENGTH_LONG).show();
-            databaseReference.child(gameId).child("client id").setValue(firebaseAuth.getCurrentUser().getUid());
-            Toast.makeText(GameActivity.this, "this is the  client", Toast.LENGTH_LONG).show();
-            button_vt.setVisibility(View.INVISIBLE);
-            button_vt.setClickable(false);
-            edit_vt.setFocusable(false);
-
-            edit_vt.setEnabled(false);
-            edit_vt.setCursorVisible(false);
-            edit_vt.setKeyListener(null);
-            edit_vt.setBackgroundColor(Color.TRANSPARENT);
-            edit_vt.setTextColor(Color.BLACK);
-
-
-            client_turn();
-        }
-
-
+        find_game() ;
 
 
 
@@ -110,8 +92,10 @@ public class GameActivity  extends AppCompatActivity {
     }
 
 
-  private void client_turn() {
-        find_game();
+  private void client_turn(String game) {
+        gameId=game ;
+
+
        DatabaseReference turn = databaseReference.child(gameId).child("Turn");
       turn.addValueEventListener(new ValueEventListener() {
           @Override
@@ -195,7 +179,7 @@ public class GameActivity  extends AppCompatActivity {
      }
 
 
-    public String find_game()
+    public void find_game()
     {
         final String[] result = new String[1];
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -204,19 +188,50 @@ public class GameActivity  extends AppCompatActivity {
                 HashMap<String,HashMap<String,String>> l =(HashMap) dataSnapshot.getValue() ;
 
                 Toast.makeText(GameActivity.this,Integer.toString(l.size()),Toast.LENGTH_SHORT).show() ;
-                Log.v("aaaaaaaaaaaaa","the data "+l) ;
+
                 if (gamefound==0)
                     for (HashMap.Entry<String, HashMap<String,String>> entry : l.entrySet()) {
                         String key = entry.getKey();
-
+                        Toast.makeText(GameActivity.this,"looking for a game",Toast.LENGTH_LONG).show();
                         HashMap<String,String> hashmap = entry.getValue();
-                        Log.v("aaaaaaaaaaaaa","the data "+key) ;
+                        //Log.v("aaaaaaaaaaaaa","the data "+key) ;
 
                         if (hashmap.get("client id").equals("0"))
                         {
-                            gameId=key;
+
+                            gameid=new String(key) ;
+                            Toast.makeText(GameActivity.this,gameid,Toast.LENGTH_LONG).show() ;
+                            Log.v("bbbbbbbb","the data "+gameid) ;
                             result[0] =key ;
                             gamefound=1 ;
+// this is the begining
+                            Log.v("aaaaaaaaaaaaa","the data "+gameid) ;
+                            gameId=gameid ;
+                            if (gameId!=null) {
+
+                                databaseReference.child(gameId).child("client id").setValue(firebaseAuth.getCurrentUser().getUid());
+                                Toast.makeText(GameActivity.this, "this is the  client", Toast.LENGTH_LONG).show();
+                                button_vt.setVisibility(View.INVISIBLE);
+                                button_vt.setClickable(false);
+                                edit_vt.setFocusable(false);
+
+                                edit_vt.setEnabled(false);
+                                edit_vt.setCursorVisible(false);
+                                edit_vt.setKeyListener(null);
+                                edit_vt.setBackgroundColor(Color.TRANSPARENT);
+                                edit_vt.setTextColor(Color.BLACK);
+                                databaseReference.child(gameId).child("Turn").setValue("client");
+
+                                client_turn(key);
+                            }
+                            else
+                            {
+                                Toast.makeText(GameActivity.this,"gameid = null",Toast.LENGTH_LONG).show() ;
+                            }
+
+
+
+//this is the end
                             break ;
                         }
 
@@ -236,7 +251,9 @@ public class GameActivity  extends AppCompatActivity {
 
 
 
-        return  result[0] ;
+
+
+
 
 
     }
