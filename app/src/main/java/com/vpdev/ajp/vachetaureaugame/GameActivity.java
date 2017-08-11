@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,6 +18,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,6 +37,9 @@ public class GameActivity  extends AppCompatActivity {
     private EditText edit_number;
     private DatabaseReference databaseReference ;
     private FirebaseAuth firebaseAuth ;
+    private TextView textView_host_name ;
+    private TextView textView_client_name ;
+    private DatabaseReference mData ;
         public static int gamefound ;
         public static String gameId ;
         public String gameid ;
@@ -50,12 +56,26 @@ public class GameActivity  extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         gamefound=0 ;
         edit_vt = (EditText) findViewById(R.id.editText_vt);
-
-
+        textView_client_name=(TextView)findViewById(R.id.textView_client_name);
+        textView_host_name=(TextView)findViewById(R.id.textView_host_name)  ;
+        mData=FirebaseDatabase.getInstance().getReference().child("users");
         if (MenuActivity.player_state.equals("host"))
     {
+        (mData.child(firebaseAuth.getCurrentUser().getUid()).child("name")).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-        Toast.makeText(GameActivity.this,"this is the  host",Toast.LENGTH_LONG).show();
+                textView_host_name.setText("Player: "+dataSnapshot.getValue(String.class));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        }) ;
+
+
+      //  Toast.makeText(GameActivity.this,"this is the  host",Toast.LENGTH_LONG).show();
         if (gameId!=null) {
 
 
@@ -80,6 +100,7 @@ public class GameActivity  extends AppCompatActivity {
     else if (MenuActivity.player_state.equals("client"))
     {
         find_game() ;
+
 
 
 
@@ -144,6 +165,43 @@ public class GameActivity  extends AppCompatActivity {
                 final String Turn = dataSnapshot.getValue(String.class);
 
                  if (Turn.equals("host")) {
+                     ( databaseReference.child(gameId).child("client id")).addValueEventListener(new ValueEventListener() {
+                         @Override
+                         public void onDataChange(DataSnapshot dataSnapshot) {
+
+                         if (!dataSnapshot.getValue(String.class).equals("0"))
+                         {
+                             (mData.child(dataSnapshot.getValue(String.class)).child("name")) .addValueEventListener(new ValueEventListener() {
+                                 @Override
+                                 public void onDataChange(DataSnapshot dataSnapshot) {
+                                     Toast.makeText(GameActivity.this,dataSnapshot.getValue(String.class)+" has joined",Toast.LENGTH_LONG).show();
+                                     textView_client_name.setText("Player: "+dataSnapshot.getValue(String.class));
+                                 }
+
+                                 @Override
+                                 public void onCancelled(DatabaseError databaseError) {
+
+                                 }
+                             })     ;
+
+
+
+
+
+
+                         }
+                         }
+
+                         @Override
+                         public void onCancelled(DatabaseError databaseError) {
+
+                         }
+                     });
+
+
+
+
+
                      DatabaseReference numberdatabase = databaseReference.child(gameId).child("NUMBER");
                      numberdatabase.addValueEventListener(new ValueEventListener() {
                          @Override
@@ -181,18 +239,30 @@ public class GameActivity  extends AppCompatActivity {
 
     public void find_game()
     {
+        (mData.child(firebaseAuth.getCurrentUser().getUid()).child("name")).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                textView_client_name.setText("Player: "+dataSnapshot.getValue(String.class));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        }) ;
         final String[] result = new String[1];
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 HashMap<String,HashMap<String,String>> l =(HashMap) dataSnapshot.getValue() ;
 
-                Toast.makeText(GameActivity.this,Integer.toString(l.size()),Toast.LENGTH_SHORT).show() ;
+//                Toast.makeText(GameActivity.this,Integer.toString(l.size()),Toast.LENGTH_SHORT).show() ;
 
                 if (gamefound==0)
                     for (HashMap.Entry<String, HashMap<String,String>> entry : l.entrySet()) {
                         String key = entry.getKey();
-                        Toast.makeText(GameActivity.this,"looking for a game",Toast.LENGTH_LONG).show();
+                       // Toast.makeText(GameActivity.this,"looking for a game",Toast.LENGTH_LONG).show();
                         HashMap<String,String> hashmap = entry.getValue();
                         //Log.v("aaaaaaaaaaaaa","the data "+key) ;
 
@@ -200,7 +270,7 @@ public class GameActivity  extends AppCompatActivity {
                         {
 
                             gameid=new String(key) ;
-                            Toast.makeText(GameActivity.this,gameid,Toast.LENGTH_LONG).show() ;
+                            //Toast.makeText(GameActivity.this,gameid,Toast.LENGTH_LONG).show() ;
                             Log.v("bbbbbbbb","the data "+gameid) ;
                             result[0] =key ;
                             gamefound=1 ;
@@ -210,7 +280,8 @@ public class GameActivity  extends AppCompatActivity {
                             if (gameId!=null) {
 
                                 databaseReference.child(gameId).child("client id").setValue(firebaseAuth.getCurrentUser().getUid());
-                                Toast.makeText(GameActivity.this, "this is the  client", Toast.LENGTH_LONG).show();
+
+                                //Toast.makeText(GameActivity.this, "this is the  client", Toast.LENGTH_LONG).show();
                                 button_vt.setVisibility(View.INVISIBLE);
                                 button_vt.setClickable(false);
                                 edit_vt.setFocusable(false);
@@ -221,6 +292,20 @@ public class GameActivity  extends AppCompatActivity {
                                 edit_vt.setBackgroundColor(Color.TRANSPARENT);
                                 edit_vt.setTextColor(Color.BLACK);
                                 databaseReference.child(gameId).child("Turn").setValue("client");
+                                set_host_name(gameId) ;
+                                ( mData.child(firebaseAuth.getCurrentUser().getUid()).child("name") ).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                        textView_client_name.setText("Player: "+dataSnapshot.getValue(String.class));
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                }) ;
 
                                 client_turn(key);
                             }
@@ -302,7 +387,44 @@ public void submit_client_turn(DataSnapshot dataSnapshot)
     });
 }
 
+public void set_host_name(String game)
+{
+    (databaseReference.child(game).child("host id")).addValueEventListener(new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            if (!(dataSnapshot.getValue(String.class).equals("0")))
+            {
+                (mData.child(dataSnapshot.getValue(String.class)).child("name")).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        textView_host_name.setText("Player: "+dataSnapshot.getValue(String.class));
+                    }
 
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                }) ;
+
+
+
+
+
+
+            }
+
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    }) ;
+
+
+
+}
 
 
 }
