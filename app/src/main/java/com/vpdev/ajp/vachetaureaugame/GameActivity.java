@@ -268,6 +268,8 @@ public class GameActivity  extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String vt = edit_vt.getText().toString().trim();
+                DatabaseReference numberdata=databaseReference.child(gameId).child("VT") ;
+                numberdata.setValue(vt) ;
                 DatabaseReference turn = databaseReference.child(gameId).child("Turn");
                 turn.setValue("client");
 
