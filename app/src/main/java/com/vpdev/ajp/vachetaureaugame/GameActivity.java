@@ -47,34 +47,45 @@ public class GameActivity  extends AppCompatActivity {
         edit_number = (EditText) findViewById(R.id.editText_number);
         databaseReference = FirebaseDatabase.getInstance().getReference().child("games");
         firebaseAuth = FirebaseAuth.getInstance();
+        gamefound=0 ;
         edit_vt = (EditText) findViewById(R.id.editText_vt);
 
-    if (MenuActivity.player_state.equals("host"))
+
+        if (MenuActivity.player_state.equals("host"))
     {
-        button_number.setVisibility(View.INVISIBLE);
-        button_number.setClickable(false);
-         edit_number.setFocusable(false);
+
+        Toast.makeText(GameActivity.this,"this is the  host",Toast.LENGTH_LONG).show();
+        if (gameId!=null) {
+
+
+            button_number.setVisibility(View.INVISIBLE);
+            button_number.setClickable(false);
+            edit_number.setFocusable(false);
             edit_number.setEnabled(false);
             edit_number.setCursorVisible(false);
             edit_number.setKeyListener(null);
             edit_number.setBackgroundColor(Color.TRANSPARENT);
             edit_number.setTextColor(Color.BLACK);
-            edit_number.setText("VOila");
+           // edit_number.setText("VOila");
+
+            host_turn();
 
 
-
-                              
-
+        }
 
 
     }
 
     else if (MenuActivity.player_state.equals("client"))
     {
-
-        button_vt.setVisibility(View.INVISIBLE);
-        button_vt.setClickable(false);
-        edit_vt.setFocusable(false);
+        gameId=find_game() ;
+        if (gameId!=null) {
+            Toast.makeText(GameActivity.this,"gameid != null",Toast.LENGTH_LONG).show();
+            databaseReference.child(gameId).child("client id").setValue(firebaseAuth.getCurrentUser().getUid());
+            Toast.makeText(GameActivity.this, "this is the  client", Toast.LENGTH_LONG).show();
+            button_vt.setVisibility(View.INVISIBLE);
+            button_vt.setClickable(false);
+            edit_vt.setFocusable(false);
 
             edit_vt.setEnabled(false);
             edit_vt.setCursorVisible(false);
@@ -83,41 +94,8 @@ public class GameActivity  extends AppCompatActivity {
             edit_vt.setTextColor(Color.BLACK);
 
 
-
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String,HashMap<String,String>> l =(HashMap) dataSnapshot.getValue() ;
-
-                Toast.makeText(GameActivity.this,Integer.toString(l.size()),Toast.LENGTH_SHORT).show() ;
-                Log.v("aaaaaaaaaaaaa","the data "+l) ;
-                          if (gamefound==0)
-                       for (HashMap.Entry<String, HashMap<String,String>> entry : l.entrySet()) {
-                           String key = entry.getKey();
-                            HashMap<String,String> hashmap = entry.getValue();
-                              Log.v("aaaaaaaaaaaaa","the data "+key) ;             
-
-                        if (hashmap.get("client id").equals("0"))
-                        {
-                            gameId=key;
-                            gamefound=1 ;
-                            databaseReference.child(gameId).child("client id").setValue(firebaseAuth.getCurrentUser().getUid()) ;
-                            break ;
-                        }
-
-
-                           // Toast.makeText(GameActivity.this,it.toString(),Toast.LENGTH_SHORT).show() ;
-
-                       }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+            client_turn();
+        }
 
 
 
@@ -126,36 +104,38 @@ public class GameActivity  extends AppCompatActivity {
 
     }
     else
-        Toast.makeText(GameActivity.this,"Error",Toast.LENGTH_SHORT).show();
-    client_turn();
+        { Toast.makeText(GameActivity.this,"Error",Toast.LENGTH_SHORT).show(); }
+
 
     }
 
 
   private void client_turn() {
-      final DatabaseReference turn = databaseReference.child(gameId).child("Turn");
+        find_game();
+       DatabaseReference turn = databaseReference.child(gameId).child("Turn");
       turn.addValueEventListener(new ValueEventListener() {
           @Override
           public void onDataChange(DataSnapshot dataSnapshot) {
 
               String Turn = dataSnapshot.getValue(String.class);
               if (Turn.equals("client")) {
-                  
-
-                  button_number.setText("submit number");
-                  button_number.setClickable(true);
-                  button_number.setOnClickListener(new View.OnClickListener() {
+                  DatabaseReference vtdatabase = databaseReference.child(gameId).child("VT");
+                  vtdatabase.addValueEventListener(new ValueEventListener() {
                       @Override
-                      public void onClick(View view) {
-                          String number = edit_number.getText().toString().trim();
-                          databaseReference.child(gameId).child("NUMBER").setValue(number);
+                      public void onDataChange(DataSnapshot dataSnapshot) {
 
-                          turn.setValue("host");
+                          submit_client_turn(dataSnapshot);
+                      }
 
+                      @Override
+                      public void onCancelled(DatabaseError databaseError) {
 
                       }
                   });
-              } else {
+
+              }
+
+                  else {
                   button_number.setText("waiting ...");
                   button_number.setClickable(false);
 
@@ -172,59 +152,40 @@ public class GameActivity  extends AppCompatActivity {
 
      private void host_turn () {
 
-         final DatabaseReference turn = databaseReference.child(gameId).child("Turn");
+
+         DatabaseReference turn = databaseReference.child(gameId).child("Turn");
          turn.addValueEventListener(new ValueEventListener() {
              @Override
              public void onDataChange(final DataSnapshot dataSnapshot) {
-                 String Turn = dataSnapshot.getValue(String.class);
+                final String Turn = dataSnapshot.getValue(String.class);
+
                  if (Turn.equals("host")) {
-
-                       DatabaseReference numberdatabase =databaseReference.child(gameId).child("NUMBER");
-                       numberdatabase.addValueEventListener(new ValueEventListener() {
-                           @Override
-                           public void onDataChange(DataSnapshot dataSnapshot) {
-                                 String numberString ;
-                                     numberString=dataSnapshot.getValue(String.class) ;
-                                     edit_number.setText(numberString);
-                           }
-
-                           @Override
-                           public void onCancelled(DatabaseError databaseError) {
-
-                           }
-                       });
-
-
-
-
-
-                     button_vt.setText("submit vt");
-                     button_vt.setClickable(true);
-                     button_vt.setOnClickListener(new View.OnClickListener() {
+                     DatabaseReference numberdatabase = databaseReference.child(gameId).child("NUMBER");
+                     numberdatabase.addValueEventListener(new ValueEventListener() {
                          @Override
-                         public void onClick(View view) {
-                             String vt = edit_vt.getText().toString().trim();
-                             databaseReference.child(gameId).child("VT").setValue(vt);
+                         public void onDataChange(DataSnapshot dataSnapshot) {
 
-                             turn.setValue("client");
+                             DatabaseReference turn = databaseReference.child(gameId).child("Turn");
+                             submit_host_turn(dataSnapshot);
 
 
                          }
+
+                         public void onCancelled(DatabaseError databaseError) {
+
+                         }
                      });
-
-
-                 } else {
-
-
+                 }
+              else
+                 {
 
                      button_vt.setText("WAITING ....");
                      button_vt.setClickable(false);
 
-
+                 }
                  }
 
 
-             }
 
              @Override
              public void onCancelled(DatabaseError databaseError) {
@@ -234,11 +195,98 @@ public class GameActivity  extends AppCompatActivity {
      }
 
 
+    public String find_game()
+    {
+        final String[] result = new String[1];
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                HashMap<String,HashMap<String,String>> l =(HashMap) dataSnapshot.getValue() ;
+
+                Toast.makeText(GameActivity.this,Integer.toString(l.size()),Toast.LENGTH_SHORT).show() ;
+                Log.v("aaaaaaaaaaaaa","the data "+l) ;
+                if (gamefound==0)
+                    for (HashMap.Entry<String, HashMap<String,String>> entry : l.entrySet()) {
+                        String key = entry.getKey();
+
+                        HashMap<String,String> hashmap = entry.getValue();
+                        Log.v("aaaaaaaaaaaaa","the data "+key) ;
+
+                        if (hashmap.get("client id").equals("0"))
+                        {
+                            gameId=key;
+                            result[0] =key ;
+                            gamefound=1 ;
+                            break ;
+                        }
+
+
+                        // Toast.makeText(GameActivity.this,it.toString(),Toast.LENGTH_SHORT).show() ;
+
+                    }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
 
 
 
+        return  result[0] ;
 
+
+    }
+    public void submit_host_turn(DataSnapshot dataSnapshot) {
+
+        String numberString ;
+        numberString=dataSnapshot.getValue(String.class) ;
+        edit_number.setText(numberString);
+        button_vt.setText("submit vt");
+        button_vt.setClickable(true);
+        button_vt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String vt = edit_vt.getText().toString().trim();
+                DatabaseReference turn = databaseReference.child(gameId).child("Turn");
+                turn.setValue("client");
+
+            }
+        });
+
+
+
+    }
+
+
+public void submit_client_turn(DataSnapshot dataSnapshot)
+{
+    String vtString ;
+    vtString=dataSnapshot.getValue(String.class) ;
+    edit_vt.setText(vtString);
+
+    button_number.setText("submit number");
+    button_number.setClickable(true);
+    button_number.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            String number = edit_number.getText().toString().trim();
+            databaseReference.child(gameId).child("NUMBER").setValue(number);
+            DatabaseReference turn = databaseReference.child(gameId).child("Turn");
+            turn.setValue("host");
+
+
+        }
+    });
+}
+
+
+
+
+}
 
 
 
@@ -265,4 +313,4 @@ public class GameActivity  extends AppCompatActivity {
 
 
 
-}
+

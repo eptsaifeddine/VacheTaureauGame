@@ -49,6 +49,7 @@ public static  String player_state ;
                 databaseReference.child("game"+Integer.toString(i)).child("VT").setValue("NOTSTARTEDYET");
                 databaseReference.child("game"+Integer.toString(i)).child("NUMBER").setValue("NOTSTARTEDYET");
                 databaseReference.child("game"+Integer.toString(i)).child("Turn").setValue("0");
+                GameActivity.gameId="game"+Integer.toString(i) ;
                 player_state="host" ;
                 Intent intent =new Intent(MenuActivity.this,GameActivity.class) ;
                 MenuActivity.this.startActivity(intent);
