@@ -274,6 +274,7 @@ public class GameActivity  extends AppCompatActivity {
                             Log.v("bbbbbbbb","the data "+gameid) ;
                             result[0] =key ;
                             gamefound=1 ;
+                            Toast.makeText(GameActivity.this,"Joined "+mData.child(hashmap.get("host id")).child("name"),Toast.LENGTH_SHORT);
 // this is the begining
                             Log.v("aaaaaaaaaaaaa","the data "+gameid) ;
                             gameId=gameid ;
