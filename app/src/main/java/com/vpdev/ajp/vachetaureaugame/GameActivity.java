@@ -137,7 +137,7 @@ else
                                     textview_timer.setText("Game ON");
                                }
                            },4000) ;
-
+//
 
                         }
 
