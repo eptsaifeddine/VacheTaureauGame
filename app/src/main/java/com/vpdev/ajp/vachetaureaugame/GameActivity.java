@@ -1,7 +1,9 @@
 package com.vpdev.ajp.vachetaureaugame;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -38,17 +40,40 @@ public class GameActivity  extends AppCompatActivity {
     private DatabaseReference databaseReference ;
     private FirebaseAuth firebaseAuth ;
     private TextView textView_host_name ;
-    private TextView textView_client_name ;
+    private TextView textView_client_name,textview_timer ;
     private DatabaseReference mData ;
+    public int player_found;
         public static int gamefound ;
         public static String gameId ;
         public String gameid ;
+        public CountDownTimer countDownTimer ;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
 
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_layout);
+        countDownTimer = new CountDownTimer(40000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                textview_timer.setTextSize(10);
+                textview_timer.setText("seconds remaining to delete game if no player joined: " + millisUntilFinished / 1000);
+
+                //here you can have your logic to set text to edittext
+            }
+
+
+            public void onFinish() {
+                textview_timer.setText("Sorry bye");
+                Intent intent=new Intent(GameActivity.this,MenuActivity.class);
+                GameActivity.this.startActivity(intent);
+                databaseReference.child(gameId).setValue(null);
+
+            }
+
+        } ;
+        textview_timer = (TextView) findViewById(R.id.textView_timer);;
         button_vt = (Button) findViewById(R.id.button_submit_vt);
         button_number = (Button) findViewById(R.id.button_submit_number);
         edit_number = (EditText) findViewById(R.id.editText_number);
@@ -59,6 +84,7 @@ public class GameActivity  extends AppCompatActivity {
         textView_client_name=(TextView)findViewById(R.id.textView_client_name);
         textView_host_name=(TextView)findViewById(R.id.textView_host_name)  ;
         mData=FirebaseDatabase.getInstance().getReference().child("users");
+        player_found=0 ;
         if (MenuActivity.player_state.equals("host"))
     {
         (mData.child(firebaseAuth.getCurrentUser().getUid()).child("name")).addValueEventListener(new ValueEventListener() {
@@ -89,7 +115,46 @@ public class GameActivity  extends AppCompatActivity {
             edit_number.setTextColor(Color.BLACK);
            // edit_number.setText("VOila");
 
-            host_turn();
+                ( databaseReference.child(gameId).child("client id")).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue(String.class).equals("0"))
+                        {
+                            countDownTimer.start() ;
+                        }
+else
+                        {
+                            countDownTimer.cancel();
+                            textview_timer.setTextSize(20);
+                            textview_timer.setText("a Player has joined ");
+                            host_turn();
+                           textview_timer.postDelayed(new Runnable() {
+                               @Override
+                               public void run() {
+                                   textview_timer.setTextSize(20);
+
+                                   textview_timer.setTextColor(Color.GREEN);
+                                    textview_timer.setText("Game ON");
+                               }
+                           },4000) ;
+
+
+                        }
+
+                           }
+
+
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
+
+
 
 
         }
@@ -168,15 +233,19 @@ public class GameActivity  extends AppCompatActivity {
                      ( databaseReference.child(gameId).child("client id")).addValueEventListener(new ValueEventListener() {
                          @Override
                          public void onDataChange(DataSnapshot dataSnapshot) {
-
-                         if (!dataSnapshot.getValue(String.class).equals("0"))
-                         {
+                             if (!dataSnapshot.getValue(String.class).equals("0"))
+                             {
                              (mData.child(dataSnapshot.getValue(String.class)).child("name")) .addValueEventListener(new ValueEventListener() {
                                  @Override
                                  public void onDataChange(DataSnapshot dataSnapshot) {
-                                     Toast.makeText(GameActivity.this,dataSnapshot.getValue(String.class)+" has joined",Toast.LENGTH_LONG).show();
-                                     textView_client_name.setText("Player: "+dataSnapshot.getValue(String.class));
-                                 }
+                                    if (player_found!=1)
+                                     {
+                                         Toast.makeText(GameActivity.this, dataSnapshot.getValue(String.class) + " has joined", Toast.LENGTH_LONG).show();
+
+                                         textView_client_name.setText("Player: " + dataSnapshot.getValue(String.class));
+                                         player_found = 1;
+                                     }
+                                     }
 
                                  @Override
                                  public void onCancelled(DatabaseError databaseError) {
